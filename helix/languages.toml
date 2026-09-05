@@ -1,0 +1,12 @@
+[language-server.intellij-idea]
+command = "intellij-lsp"
+
+[[language]]
+name = "java"
+language-servers = ["intellij-idea"]
+roots = ["pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts", "BUILD.bazel", "MODULE.bazel"]
+
+[[language]]
+name = "kotlin"
+language-servers = ["intellij-idea"]
+roots = ["pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts", "BUILD.bazel", "MODULE.bazel"]

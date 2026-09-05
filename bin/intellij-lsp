@@ -1,0 +1,69 @@
+#!/bin/sh
+set -eu
+
+data_home=${XDG_DATA_HOME:-"$HOME/.local/share"}
+cache_home=${XDG_CACHE_HOME:-"$HOME/.cache"}
+lsp_home=${INTELLIJ_LSP_HOME:-"$data_home/jetbrains-intellij-lsp"}
+server_dir=${INTELLIJ_LSP_SERVER_DIR:-"$lsp_home/current"}
+launcher="$server_dir/bin/intellij-server"
+eula="$server_dir/EULA.txt"
+accepted="$lsp_home/accepted-eula-hash"
+
+hash_file() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | cut -c1-16
+  else
+    shasum -a 256 "$1" | cut -c1-16
+  fi
+}
+
+case ${1:-} in
+  --show-eula)
+    cat "$eula"
+    exit 0
+    ;;
+  --accept-eula)
+    cat "$eula"
+    printf '\nType "accept" to accept this agreement: '
+    read -r answer
+    [ "$answer" = accept ] || { printf 'Agreement not accepted.\n' >&2; exit 1; }
+    mkdir -p "$lsp_home"
+    hash_file "$eula" > "$accepted"
+    printf 'Agreement accepted.\n'
+    exit 0
+    ;;
+esac
+
+if [ ! -x "$launcher" ]; then
+  printf '%s\n' "IntelliJ language server is not installed. Run install.sh first." >&2
+  exit 1
+fi
+
+eula_hash=$(hash_file "$eula")
+if [ ! -f "$accepted" ] || [ "$(cat "$accepted")" != "$eula_hash" ]; then
+  printf '%s\n' "The IntelliJ language server EULA is new or has not been accepted." >&2
+  printf '%s\n' "Run intellij-lsp --accept-eula to review and accept it." >&2
+  exit 2
+fi
+
+case ${INTELLIJ_LSP_REGION:-americas} in
+  africa|americas|apac|china|europe|middle_east|oceania) ;;
+  *) printf '%s\n' "Invalid INTELLIJ_LSP_REGION: ${INTELLIJ_LSP_REGION}" >&2; exit 2 ;;
+esac
+
+case ${INTELLIJ_LSP_DATA_SHARING:-none} in
+  none|anonymous|full) ;;
+  *) printf '%s\n' "Invalid INTELLIJ_LSP_DATA_SHARING: ${INTELLIJ_LSP_DATA_SHARING}" >&2; exit 2 ;;
+esac
+
+workspace_id=$(printf '%s' "$(pwd -P)" | cksum | awk '{print $1}')
+system_path="$cache_home/jetbrains-intellij-lsp/workspaces/$workspace_id"
+mkdir -p "$system_path"
+
+exec "$launcher" \
+  --stdio \
+  --system-path "$system_path" \
+  --eula "$eula_hash" \
+  --region "${INTELLIJ_LSP_REGION:-americas}" \
+  --data-sharing "${INTELLIJ_LSP_DATA_SHARING:-none}" \
+  "$@"
