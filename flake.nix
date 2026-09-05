@@ -55,7 +55,8 @@
           dontUnpack = true;
 
           nativeBuildInputs = [ pkgs.makeWrapper ]
-            ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.autoPatchelfHook ];
+            ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.autoPatchelfHook ]
+            ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ pkgs.unzip ];
           buildInputs = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
             pkgs.alsa-lib
             pkgs.fontconfig
@@ -79,7 +80,7 @@
             tar -xzf "$src" --strip-components=1 -C "$out/libexec/intellij-server"
           '' else ''
             mkdir extracted
-            tar -xf "$src" -C extracted
+            unzip -q "$src" -d extracted
             entries=(extracted/*)
             if [[ ''${#entries[@]} -eq 1 && -d ''${entries[0]} ]]; then
               cp -R "''${entries[0]}/." "$out/libexec/intellij-server/"
