@@ -128,7 +128,11 @@ Indexes are stored under `${XDG_CACHE_HOME:-~/.cache}/jetbrains-intellij-lsp/wor
 
 Run `./install.sh` again to install the current preview build and renew EULA acceptance if its text changed.
 
+As of 2026-10-13, the latest Open VSX extension is **0.0.13**, published on 2026-10-01. It bundles server **263.6379.0**, which is the version pinned by this flake for all four platforms. The server remains EAP software with a 30-day evaluation term; this update does not remove that expiry.
+
 The flake is deliberately pinned. Update `version`, all four archive URLs and their hashes in `flake.nix` when JetBrains publishes a new preview, then rebuild it. Updating only `flake.lock` updates Nixpkgs, not the language server.
+
+Use the [Open VSX release metadata](https://open-vsx.org/api/JetBrains/intellij-server/linux-x64/latest) to find the latest extension. Download its VSIX for each target (`linux-x64`, `linux-arm64`, `darwin-x64` and `darwin-arm64`) and read `extension/server-bundle.json`: it contains the server version, JetBrains download URL and SHA-256 checksum. Use those published checksums for the Nix pins, converted from hexadecimal to `sha256-` base64 format. The IntelliJ server is distributed as a proprietary binary, not vendored source code.
 
 Remove a Nix profile installation with:
 

@@ -5,7 +5,8 @@
 
   outputs = { self, nixpkgs }:
     let
-      version = "263.3533.0";
+      # JetBrains.intellij-server 0.0.13; hashes from each VSIX's server-bundle.json.
+      version = "263.6379.0";
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -15,22 +16,22 @@
       archives = {
         x86_64-linux = {
           url = "https://download.jetbrains.com/language-server/intellij-server/${version}/intellij-server-${version}.tar.gz";
-          hash = "sha256-yqTRISNs5ciQRpWoe+N1po+tqbnKQjFFB3P5/Z14w8M=";
+          hash = "sha256-dSnMcz1KAg4cE2kYOy9g4TXIW48HS78n0UdqWns4OcM=";
           format = "tar.gz";
         };
         aarch64-linux = {
           url = "https://download.jetbrains.com/language-server/intellij-server/${version}/intellij-server-${version}-aarch64.tar.gz";
-          hash = "sha256-OJR9Kf2OdYn4+9V5Sy5YDUCDfN6OYMoOILLLIQ6oB24=";
+          hash = "sha256-e1CvotbwjL2dw5zNm/icA7s3/yVuJSQ/winPjsEDVOo=";
           format = "tar.gz";
         };
         x86_64-darwin = {
           url = "https://download.jetbrains.com/language-server/intellij-server/${version}/intellij-server-${version}.sit";
-          hash = "sha256-6ecMZ6bac1HUzZ5zyZKoFCWyYcvFVAH2igqPDXUOYmg=";
+          hash = "sha256-5f/436CvUj2wU7ucrUZSn4YhFmFuHg17LLrtAy7d7xU=";
           format = "sit";
         };
         aarch64-darwin = {
           url = "https://download.jetbrains.com/language-server/intellij-server/${version}/intellij-server-${version}-aarch64.sit";
-          hash = "sha256-BM7NT9BLxCypV+AGNn1aQsot5rcuX1FJRwzFxwEUbaQ=";
+          hash = "sha256-RDFXzghdrpR2N1lKuINpL6fpUq4MfQuqbrkX/JHKvdE=";
           format = "sit";
         };
       };
